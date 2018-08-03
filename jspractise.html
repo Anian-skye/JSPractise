@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>IFE ECMAScript</title>
+</head>
+<body>
+<input id="dec-number" type="number" placeholder="输入一个十进制非负整数">
+<input id="bin-bit" type="number" placeholder="输入转化后二进制数字位数">
+<button id="trans-btn" onclick="changeNumber()">转化为二进制</button>
+<p id="result" style="display: inline-block">运算结果</p>
+<p id="threeGame" style="width:500px; word-break:break-all; word-wrap:break-word ">三的游戏:</p>
+<p>九九乘法表</p>
+<table id="nine_table"></table>
+<p id="sayHello"></p>
+<script>
+
+    function dec2bin(decNumber,binbit) {
+        // 在这里实现你的转化方法，注意需要判断输入必须为一个非负整数
+        decNumber = parseInt(decNumber);
+        var twoNumber = [];
+        var i;
+        if(decNumber>=0){
+            while(decNumber>0){
+                i = decNumber%2;
+                decNumber=decNumber/2;
+                decNumber = parseInt(decNumber);
+                twoNumber.push(i);
+            }
+            if(binbit<twoNumber.length){
+                twoNumber.reverse();
+                var twoNumber = twoNumber.slice(0,binbit);  //数组分割 取得从0到binbit的值
+            }
+            else{
+                l=twoNumber.length;
+                for(i=0;i<binbit-l;i++){
+                    twoNumber.push(0);
+                }
+                twoNumber.reverse();
+            }
+
+            twoNumber = twoNumber.join("");//数组转字符串
+            return twoNumber;
+        }
+        else{
+            alert("输入了负数");
+        }
+
+    }
+
+    function changeNumber(){
+            number = document.getElementById("dec-number").value;
+            binbit = document.getElementById("bin-bit").value;
+            if(number!=""&&binbit!=""){
+                result = dec2bin(number,binbit);
+                p = document.getElementById("result");
+                p.innerHTML = "运算结果:"+result;
+            }
+            else{
+                alert("不能为空")
+            }
+    }
+
+
+    function gameThree(){
+        gameP = document.getElementById("threeGame");
+        for(var i=1;i<100;i++){
+            a = String(i);
+            if(i%3==0||a.indexOf("3")>-1){
+                    gameP.innerHTML += "PA";
+            }
+            else{
+                gameP.innerHTML += i;
+            }
+            gameP.innerHTML += ",";
+        }
+        gameP.innerHTML += "100";
+    }
+
+
+
+    function muti(){
+        var result;
+        table = document.getElementById("nine_table");
+        for(i=1;i<10;i++){
+            var tr = document.createElement("tr");
+            for(j=1;j<=i;j++){
+                result = i*j;
+                //console.log(i+"*"+j+"="+result);
+                var td = document.createElement("td");
+                td.innerHTML=i+"*"+j+"="+result;
+                tr.appendChild(td);
+            }
+            table.appendChild(tr);
+        }
+    }
+
+    function sayHello(){
+        var myDate = new Date();                        //获取当前系统时间
+        var h = myDate.getHours();
+        sayH = document.getElementById("sayHello");
+        console.log(h);
+        if(h>=6&&h<8)
+            sayH.innerHTML = "早上好，现在是"+myDate.toString();
+        if(h>=8&&h<14)
+            sayH.innerHTML = "中午好，现在是"+myDate.toString();
+        if(h>=14&&h<=24)
+            sayH.innerHTML = "晚上好,现在是"+myDate.toString();
+        if(h>0&&h<6)
+            sayH.innerHTML = "睡觉去吧";
+    }
+
+
+    gameThree();
+    muti();
+    sayHello();
+
+</script>
+</body>
+</html>
