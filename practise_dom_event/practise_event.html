@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    .sprite{
+    }
+
+    #image{
+        width:450px;
+        height:450px;
+        background-image: url("http://ife.baidu.com/2016/static/img/erik_ce204002.jpg");
+        background-repeat: repeat-y;
+        position: absolute;
+        background-position-y: 0px;
+    }
+</style>
+
+
+
+<input id="name" type="text">
+<button id="submit-btn">Submit</button>
+
+
+<label for="school-select">
+    <input id="school" name="status" type="radio">
+    School
+</label>
+<label for="company-select">
+    <input id="company" name="status" type="radio">
+    Company
+</label>
+
+<select id="school-select">
+    <option>北京邮电大学</option>
+    <option>黑龙江大学</option>
+    <option>华中科技大学</option>
+</select>
+
+<select id="company-select">
+    <option>百度</option>
+    <option>爱奇艺</option>
+</select>
+
+
+<ul class="palette">
+    <li style="background-color:crimson"></li>
+    <li style="background-color:bisque"></li>
+    <li style="background-color:blueviolet"></li>
+    <li style="background-color:coral"></li>
+    <li style="background-color:chartreuse"></li>
+    <li style="background-color:darkolivegreen"></li>
+    <li style="background-color:cyan"></li>
+    <li style="background-color:#194738"></li>
+</ul>
+
+<p class="color-picker"></p>
+
+
+
+
+<div id="fade-obj" style="width:300px;height:300px;background:#000"></div>
+<button id="fade-btn">淡出</button>
+
+
+
+<div class="sprite">
+    <div id="image"></div>
+</div>
+
+
+
+
+
+<script>
+
+
+
+
+
+    //fifth fractise
+
+    imgGif = document.getElementById("image");
+    imgGif.style.backgroundPosition = 0+"px "+0+"px";
+    pos = 0;
+    function moveBackground(){
+        console.log(imgGif.style.backgroundPosition);
+        x = imgGif.style.backgroundPositionX;
+        y = imgGif.style.backgroundPositionY;
+
+        setInterval(function(){
+            pos -= 22560;       //为什么是这么大的一个值
+            imgGif.style.backgroundPositionY = pos+"px";
+        },500);
+    }
+    moveBackground();
+
+
+
+
+
+
+
+
+
+
+
+    // fourth practise
+    var btn = document.getElementById("fade-btn");
+    var fadeObj = document.getElementById("fade-obj");
+    fadeObj.style.opacity = 1;
+
+    function fadetime(){
+        fadeObj.style.opacity -= 0.1;
+        console.log(fadeObj.style.opacity);
+        if(fadeObj.style.opacity != 0)
+            setTimeout("fadetime()",100);
+        else{
+            btn.disabled = false;
+            btn.innerHTML = "淡入";
+        }
+    }
+
+    var num = 0;
+    function fadeinter(){
+        num += 0.1;
+        fadeObj.style.opacity = num;
+        //不知道为什么fadeObj.style.opacity不可以
+        if(fadeObj.style.opacity == 1){
+            clearInterval(intervalId);
+            btn.disabled = false;
+            btn.innerHTML = "淡出";
+        }
+    }
+
+    btn.addEventListener("click",function(event){
+
+        btn.disabled = true;
+        if(fadeObj.style.opacity == 1)
+        {
+            //console.log("clicked");
+            setTimeout("fadetime()",1000);      // setTimeout() 只执行 code 一次。如果要多次调用，请使用 setInterval() 或者让 code 自身再次调用 setTimeout()。
+        }
+        else{
+            num = 0;
+            intervalId = setInterval(fadeinter,100);
+        }
+
+    });
+
+
+
+    // first practise
+    input = document.getElementById("name");
+    button = document.getElementById("submit-btn");
+    function printValue(){
+        console.log(input.value);
+    }
+
+
+    button.addEventListener("click",function(event){
+            console.log(input.value);
+    })
+
+    input.addEventListener("keyup",function(event){
+        if(event.keyCode == 16)
+            console.log(input.value);
+        if(event.keyCode == 27)
+            input.value="";
+    });
+
+
+
+    //second practise    not success
+
+    schoolInput = document.getElementById("school");
+    company = document.getElementById("company");
+    schoolSelect = document.getElementById("school-select");
+    companySelect = document.getElementById("company-select");
+
+
+    schoolInput.addEventListener("click",function(event){
+        var newEvent = document.createEvent("MouseEvent");
+        newEvent.initMouseEvent("click",true,true,document.defaultView,0,0,0,0,0,false,false,false,false,0,null);
+        schoolSelect.dispatchEvent(newEvent);
+    });
+
+    schoolSelect.addEventListener("click",function(event){
+        console.log("clicked");
+    })
+
+
+
+
+    //  third practise
+    var uList = document.querySelector("ul");
+    var p = document.querySelector(".color-picker");
+    uList.addEventListener("click",function(event){
+        thisLi = event.target;
+        console.log(thisLi);
+        p.style.color = thisLi.style.backgroundColor;
+        p.innerHTML = thisLi.style.backgroundColor;
+        console.log(p);
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
