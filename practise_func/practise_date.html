@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>当前时间是：</p>
+<p>当前时间是：</p>
+
+
+<select id="year-select">
+
+</select>
+
+<select id="month-select">
+
+</select>
+
+<select id="day-select">
+
+</select>
+
+<select id="hour-select">
+
+</select>
+
+<select id="minite-select">
+
+</select>
+
+<select id="second-select">
+
+</select>
+
+<p id="result-wrapper">现在距离 2001年1月1日星期X HH:MM:SS 还有 X 天 X 小时 X 分 X 秒</p>
+
+
+
+
+<script>
+
+
+    function addOptions(parent,num,base){
+        for(var i=base;i<num+base;i++){
+            var op = document.createElement("option");
+            op.value = i;
+            op.innerHTML = i;
+            parent.appendChild(op);
+        }
+
+    }
+
+    yearSelect = document.getElementById("year-select");
+    monthSelect = document.getElementById("month-select");
+    daySelect = document.getElementById("day-select");
+    hourSelect = document.getElementById("hour-select");
+    miniteSelect = document.getElementById("minite-select");
+    secondSelect = document.getElementById("second-select");
+    p = document.getElementById("result-wrapper");
+    addOptions(yearSelect,30,2001);
+    addOptions(monthSelect,12,1);
+    addOptions(daySelect,31,1);
+    addOptions(hourSelect,60,0);
+    addOptions(miniteSelect,60,0);
+    addOptions(secondSelect,60,0);
+
+    monthSelect.addEventListener("change",function(){
+       addDays();
+       str = calTime();
+       p.innerHTML = str;
+
+    });
+
+    yearSelect.addEventListener("change",function(){
+        addDays();
+        str = calTime();
+        p.innerHTML = str;
+    });
+
+    daySelect.addEventListener("change",function(){
+        str = calTime();
+        p.innerHTML = str;
+
+    });
+
+    hourSelect.addEventListener("change",function(){
+        str = calTime();
+        p.innerHTML = str;
+
+    });
+
+    miniteSelect.addEventListener("change",function(){
+        str = calTime();
+        p.innerHTML = str;
+
+    });
+
+    secondSelect.addEventListener("change",function(){
+        str = calTime();
+        p.innerHTML = str;
+    });
+
+
+
+
+
+    function calTime(){
+        var currentDate = new Date();
+        var currentSecond = currentDate.getTime();
+        var resultTime;
+        year = yearSelect.value;
+        month = monthSelect.value-1;
+        day = daySelect.value;
+        hour = hourSelect.value;
+        minite = miniteSelect.value;
+        second = secondSelect.value;
+        var selectDate = new Date(year,month,day,hour,minite,second);
+        var selectSecond = selectDate.getTime();
+        week = selectDate.getDay();
+        console.log(selectDate);
+        console.log(week);
+
+
+
+        if(currentSecond > selectSecond){
+            console.log(currentSecond-selectSecond);
+            var selectTime = formTime(year,month+1,day,week,hour,minite,second);
+            var diff = calPreciseTime(currentSecond-selectSecond);
+            resultTime = "现在距离"+selectTime+"已经过去："+diff;
+        }
+
+        if(currentSecond < selectSecond){
+            var selectTime = formTime(year,month+1,day,week,hour,minite,second);
+            var diff = calPreciseTime(selectSecond-currentSecond);
+            resultTime = "现在距离"+selectTime+"还有："+diff;
+        }
+
+
+        function calPreciseTime(t){
+            var second = t/1000;
+            var s = parseInt(second%60);
+            var minite = second/60;
+            var m = parseInt(minite%60);
+            var hour = minite/60;
+            var h = parseInt(hour%24);
+            var day = parseInt(hour/24);
+            str = day+"天"+h+"小时"+m+"分"+s+"秒";
+            return str;
+
+        }
+
+        return resultTime;
+
+
+    }
+
+
+
+
+    function addDays(){
+        clearAllChild(daySelect);
+        year = yearSelect.value;
+        month = monthSelect.value;
+        days = getDay(year,month);
+        addOptions(daySelect,days,1);
+    }
+    function clearAllChild(selectBox){
+        for(var i =0,len=selectBox.options.length;i<len;i++){
+            selectBox.remove(0);    //每次移除第一个选项之后所有选项自动向上，因此要重复移除第一个
+        }
+    }
+
+
+
+    function getDay(y,m){
+        var flag = 0;
+        var days = 0;
+        if(y%400==0||y%4==0&&y%100!=0)
+            flag=1;
+        m = parseInt(m);
+        switch(m){
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                days = 31;
+                break;
+            case 2:
+                (flag==1)?days=29:days=28;
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                days = 30;
+                break;
+        }
+        return days;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    timep1 = document.getElementsByTagName("p")[0];
+    timep2 = document.getElementsByTagName("p")[1];
+    setInterval(function(){
+        getCurrentTime();
+    },1000);
+
+    function getCurrentTime(){
+        var currentDate = new Date();
+        year = currentDate.getFullYear();
+        month = currentDate.getMonth()+1;
+        day = currentDate.getDate();
+        week = currentDate.getDay();
+        hour = currentDate.getHours();
+        minute = currentDate.getMinutes();
+        second = currentDate.getSeconds();
+        timeStr = formTime(year,month,day,week,hour,minute,second);
+        timep1.innerHTML ="当前时间是："+ timeStr;
+        anotherTimeStr = anotherFormTime(year,month,day,week,hour,minute,second);
+        timep2.innerHTML ="Current time is："+ anotherTimeStr;
+    }
+
+    function compNum(n){
+        n = n.toString();
+        if(n.length==1)
+            n = "0"+n;
+        return n;
+    }
+
+
+    function getWeek(d){
+        var str = "";
+        switch(d){
+            case 1:
+                str="星期一";
+                break;
+            case 2:
+                str="星期二";
+                break;
+            case 3:
+                str="星期三";
+                break;
+
+            case 4:
+                str="星期四";
+                break;
+
+            case 5:
+                str="星期五";
+                break;
+
+            case 6:
+                str="星期六";
+                break;
+
+            case 7:
+                str="星期日";
+                break;
+            default:
+                str="日期错误";
+                break;
+
+        }
+        return str;
+    }
+
+
+    function getEngWeek(d){
+        var str = "";
+        switch(d){
+            case 1:
+                str="Monday";
+                break;
+            case 2:
+                str="Tuesday";
+                break;
+            case 3:
+                str="Wednesday";
+                break;
+
+            case 4:
+                str="Thursday";
+                break;
+
+            case 5:
+                str="Friday";
+                break;
+
+            case 6:
+                str="Saturday";
+                break;
+
+            case 7:
+                str="Sunday";
+                break;
+            default:
+                str="日期错误";
+                break;
+
+        }
+        return str;
+    }
+
+
+
+    function formTime(y,m,d,w,h,mi,s){
+        m = compNum(m);
+        d = compNum(d);
+        h = compNum(h);
+        mi = compNum(mi);
+        s = compNum(s);
+        w = getWeek(w);
+
+        resultTime =  y+"年"+m+"月"+d+"日"+w+" "+h+":"+mi+":"+s
+
+        return resultTime;
+    }
+
+    function anotherFormTime(y,m,d,w,h,mi,s){
+        m = compNum(m);
+        d = compNum(d);
+        h = compNum(h);
+        mi = compNum(mi);
+        s = compNum(s);
+        w = getEngWeek(w);
+
+        resultTime = y+"-"+m+"-"+d+" "+w+" "+h+":"+mi+":"+s+" PM";
+        return resultTime;
+    }
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
