@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<input type="text" placeholder="请输入要查询ID的姓名">
+<button type="submit">查询ID</button>
+<input type="text" placeholder="请输入要查询姓名的id">
+<button type="submit">查询姓名</button>
+<p></p>
+
+
+
+<script>
+    var tree = {
+        "id": 0,
+        "name": "root",
+        "left": {
+            "id": 1,
+            "name": "Simon",
+            "left": {
+                "id": 3,
+                "name": "Carl",
+                "left": {
+                    "id": 7,
+                    "name": "Lee",
+                    "left": {
+                        "id": 11,
+                        "name": "Fate"
+                    }
+                },
+                "right": {
+                    "id": 8,
+                    "name": "Annie",
+                    "left": {
+                        "id": 12,
+                        "name": "Saber"
+                    }
+                }
+            },
+            "right": {
+                "id": 4,
+                "name": "Tony",
+                "left": {
+                    "id": 9,
+                    "name": "Candy"
+                }
+            }
+        },
+        "right": {
+            "id": 2,
+            "name": "right",
+            "left": {
+                "id": 5,
+                "name": "Carl",
+            },
+            "right": {
+                "id": 6,
+                "name": "Carl",
+                "right": {
+                    "id": 10,
+                    "name": "Kai"
+                }
+            }
+        }
+    }
+
+    console.log(tree.name);
+
+
+    var nameID = {};
+    var IDName = {};
+
+
+
+
+    function searchNameAndId(obj) {
+        if(obj == undefined)
+            return 0;
+        nameID[obj.name]=obj.id;
+        IDName[obj.id]=obj.name;
+        searchNameAndId(obj.left);
+        searchNameAndId(obj.right);
+    }
+    searchNameAndId(tree);
+
+    // 假设id和name均不会重复，根据输入name找到对应的id
+    var inputA = document.getElementsByTagName("input")[0];
+    var inputB = document.getElementsByTagName("input")[1];
+    var buttonA = document.getElementsByTagName("button")[0];
+    var buttonB = document.getElementsByTagName("button")[1];
+    var p =document.getElementsByTagName("p")[0];
+
+    buttonA.addEventListener("click",function(){
+        var name = inputA.value;
+        var id = nameID[name];
+        console.log(name);
+        console.log(id);
+        p.innerHTML = id;
+    });
+
+    buttonB.addEventListener("click",function(){
+        var id = inputB.value;
+        var name = IDName[id];
+        p.innerHTML = name;
+    });
+
+    // 把这个对象中所有的名字以“前序遍历”的方式全部输出到console中
+    function getListWithDLR(obj) {
+        if(obj == undefined)
+            return 0;
+        console.log(obj.name);
+        getListWithDLR(obj.left);
+        getListWithDLR(obj.right);
+    }
+
+    //getListWithDLR(tree);
+
+    // 把这个对象中所有的名字以“中序遍历”的方式全部输出到console中
+    function getListWithLDR(obj) {
+        if(obj == undefined)
+            return 0;
+        getListWithLDR(obj.left);
+        console.log(obj.name);
+        getListWithLDR(obj.right);
+
+    }
+
+    // 把这个对象中所有的名字以“后序遍历”的方式全部输出到console中
+    function getListWithLRD(obj) {
+        if(obj == undefined)
+            return 0;
+        getListWithLRD(obj.left);
+        getListWithLRD(obj.right);
+        console.log(obj.name);
+    }
+
+
+</script>
+
+</body>
+</html>
