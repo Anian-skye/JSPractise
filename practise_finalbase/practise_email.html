@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<style>
+    input{
+        width:150px;
+        border:1px solid #dbdad7
+    }
+    ul{
+        width:152px;
+        box-sizing: border-box;
+        border:1px solid #dbdad7;
+        margin-top:-3px;
+    }
+
+    li{
+        width:150px;
+        margin-left:-40px;
+        right:0px;
+        list-style: none;
+    }
+</style>
+
+
+
+<div class="wrapper">
+    <input id="email-input" type="text">
+    <ul id="email-sug-wrapper" class="email-sug"></ul>
+</div>
+
+
+
+<script>
+
+    var postfixList = ['163.com', 'gmail.com', '126.com', 'qq.com', '263.net'];
+    var input = document.getElementById("email-input");
+    input.focus();
+    var wrap = document.getElementById("email-sug-wrapper");
+    var selectedList = 0;
+
+
+
+    var htmlCode = {
+        htmlEncode:function(html){
+            //1.首先动态创建一个容器标签元素，如DIV
+            var temp = document.createElement ("div");
+            //2.然后将要转换的字符串设置为这个元素的innerText(ie支持)或者textContent(火狐，google支持)
+            //(temp.textContent != undefined ) ? (temp.textContent = html) : (temp.innerText = html);
+            temp.textContent = html;
+            //3.最后返回这个元素的innerHTML，即得到经过HTML编码转换的字符串了
+            var output = temp.innerHTML;
+            temp = null;
+            return output;
+        },
+        htmlDecode:function(text){
+            //1.首先动态创建一个容器标签元素，如DIV
+            var temp = document.createElement("div");
+            //2.然后将要转换的字符串设置为这个元素的innerHTML(ie，火狐，google都支持)
+            temp.innerHTML = text;
+            console.log(text);
+            //3.最后返回这个元素的innerText(ie支持)或者textContent(火狐，google支持)，即得到经过HTML解码的字符串了。
+            var output = temp.textContent;
+            console.log(output);
+            temp = null;
+            return output;
+        }
+
+    };
+
+//    function htmlEncode(html){
+//        //1.首先动态创建一个容器标签元素，如DIV
+//        var temp = document.createElement ("div");
+//        //2.然后将要转换的字符串设置为这个元素的innerText(ie支持)或者textContent(火狐，google支持)
+//        //(temp.textContent != undefined ) ? (temp.textContent = html) : (temp.innerText = html);
+//        temp.textContent = html;
+//        //3.最后返回这个元素的innerHTML，即得到经过HTML编码转换的字符串了
+//        var output = temp.innerHTML;
+//        temp = null;
+//        return output;
+//    }
+//
+//
+//
+//    function htmlDecode (text){
+//        //1.首先动态创建一个容器标签元素，如DIV
+//        var temp = document.createElement("div");
+//        //2.然后将要转换的字符串设置为这个元素的innerHTML(ie，火狐，google都支持)
+//        temp.innerHTML = text;
+//        console.log(text);
+//        //3.最后返回这个元素的innerText(ie支持)或者textContent(火狐，google支持)，即得到经过HTML解码的字符串了。
+//        var output = temp.textContent;
+//        console.log(output);
+//        temp = null;
+//        return output;
+//    }
+
+
+
+
+    var liOperations = {
+        addLi:function(array){
+            var inp = input.value;
+            inp = htmlCode.htmlEncode(inp);
+            var formerStr = getFormerStr(inp);
+            if(formerStr!=""){
+                for(var i=0,len = array.length;i<len;i++) {
+                    var li = document.createElement("li");
+                    li.setAttribute("index",i);
+                    if(i==0)
+                        li.style.backgroundColor = "#fdc5cf";
+                    li.innerHTML = formerStr + "@" + array[i];
+                    wrap.appendChild(li);
+                }
+            }
+        },
+
+        removeAllLi:function(){
+            lis = wrap.childNodes;
+            for(var i=0,len=lis.length;i<len;i++){
+                wrap.removeChild(lis[0]);
+            }
+            input.focus();
+        }
+    }
+
+
+//
+//    function addLi(array){
+//        var inp = input.value;
+//        inp = htmlCode.htmlEncode(inp);
+//        var formerStr = getFormerStr(inp);
+//        if(formerStr!=""){
+//            for(var i=0,len = array.length;i<len;i++) {
+//                var li = document.createElement("li");
+//                li.setAttribute("index",i);
+//                if(i==0)
+//                    li.style.backgroundColor = "#fdc5cf";
+//                li.innerHTML = formerStr + "@" + array[i];
+//                wrap.appendChild(li);
+//            }
+//        }
+//    }
+//
+//
+//    function removeAllLi(){
+//        lis = wrap.childNodes;
+//        for(var i=0,len=lis.length;i<len;i++){
+//            wrap.removeChild(lis[0]);
+//        }
+//        input.focus();
+//    }
+
+
+
+    function getFormerStr(inp){
+        inp = inp.trim();
+        var pos = inp.indexOf("@");
+        if(pos>=0){
+            var formerStr = inp.slice(0,pos);
+            return formerStr;
+        }
+        else
+            return inp;
+    }
+
+
+    function searchList(){                                       //找到匹配的后缀名
+        var inp = input.value;
+        inp = htmlCode.htmlEncode(inp);
+        var pos = inp.indexOf("@");
+        if(pos>=0)
+        {
+            var backStr = inp.slice(pos+1,inp.length);
+            backStr = backStr.trim();
+            var newPostfixList = [];
+            var re = new RegExp("^"+backStr);
+            for(var i=0,len=postfixList.length;i<len;i++){
+                if(re.test(postfixList[i]))
+                    newPostfixList.push(postfixList[i]);
+            }
+            return newPostfixList;
+        }
+        else
+            return postfixList;
+    }
+
+
+
+
+    function clickSection(clickedLi){
+        var value = clickedLi.innerHTML;
+        console.log(value);
+        value = htmlCode.htmlDecode(value);
+        input.value = value;
+        liOperations.removeAllLi();
+    }
+
+    function colorChange(overLi,flag){
+        if(flag==1){
+            overLi.style.backgroundColor = "#bde0e9";
+        }
+        else{
+            console.log("1");
+            overLi.style.backgroundColor = "transparent";
+        }
+    }
+
+
+    function upAndDownEvent(keyCode){
+        var lis = wrap.getElementsByTagName("li");
+        var len = lis.length;
+        var oldSelectedList = selectedList;
+
+        if(keyCode == 38&&selectedList>0){
+            selectedList--;
+        }
+
+        if(keyCode == 40){
+            selectedList++;
+            selectedList = selectedList%len;
+        }
+
+        lis[selectedList].style.backgroundColor = "#fdc5cf";
+        lis[oldSelectedList].style.backgroundColor = "transparent";
+
+    }
+
+    function enterEvent(){
+        var lis = wrap.getElementsByTagName("li");
+        var value = lis[selectedList].innerHTML;
+        value = htmlCode.htmlDecode(value);
+        console.log(value);
+        input.value = value;
+        liOperations.removeAllLi();
+    }
+
+
+
+
+    //  input添加keyup方法，判断是否是上，下，enter键，esc键，分别执行相应的操作
+
+    input.addEventListener("keyup",function(event){
+
+        var keyCode = event.keyCode;
+        console.log(keyCode);
+        if(keyCode==40||keyCode==38){
+            upAndDownEvent(event.keyCode);
+        }
+        else if(keyCode==13){
+            enterEvent();
+        }
+        else if(keyCode==27){
+            input.select();
+        }
+        else{
+            liOperations.removeAllLi();
+            var newPostfixList = searchList();
+            liOperations.addLi(newPostfixList);
+        }
+
+    });
+
+    //  wrap添加click,mouseover,mouseout方法，分别执行相应的操作（事件委托）
+
+    wrap.addEventListener("click",function(event){
+        var target = event.target;
+        if(target!=wrap) {
+            clickSection(target);
+        }
+    });
+    wrap.addEventListener("mouseover",function(event){
+        var target = event.target;
+        if(target!=wrap){
+            colorChange(target,1);
+        }
+    });
+    wrap.addEventListener("mouseout",function(event){
+        var target = event.target;
+        index = target.getAttribute("index");
+        if(index != selectedList&&target!=wrap){
+            colorChange(target,0);
+        }
+        if(index == selectedList&&target!=wrap){
+            target.style.backgroundColor = "#fdc5cf";
+        }
+    })
+
+
+
+</script>
+</body>
+</html>
