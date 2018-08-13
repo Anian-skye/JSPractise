@@ -178,13 +178,13 @@ var tableOptions = {
 
             if(flag == 1){
                 var firstTd = document.createElement("td");
-                firstTd.innerHTML = first;
+                firstTd.innerHTML = proInf[i][first];
                 firstTd.rowSpan = len;
                 tr.appendChild(firstTd);
                 flag=0;
             }
             var secondTd = document.createElement("td");
-            secondTd.innerHTML = second;
+            secondTd.innerHTML = proInf[i][second];
             tr.appendChild(secondTd);
             this.addSaleTrd(proInf[i],tr);
         }
@@ -219,33 +219,30 @@ var tableOptions = {
     addTrdDepends:function(proInf){
         var regionChecked = checkboxs.getCheckBox(regionDiv);
         var productChecked = checkboxs.getCheckBox(productDiv);
-        rlen = regionChecked.length;
+        rlen = regionChecked.length;             //获取每个模块选择的个数
         plen = productChecked.length;
 
 
 
         if(rlen > 1 && plen==1){
             this.addHeadTr("商品","地区");
-            this.addOneMultiTr(proInf,rlen,proInf[0].product,proInf[0].region);
+            this.addOneMultiTr(proInf,rlen,"product","region");
         }
         else if(rlen==1 && plen>1){
             this.addHeadTr("地区","商品");
-            this.addOneMultiTr(proInf,plen,proInf[0].region,proInf[0].product);
-
+            this.addOneMultiTr(proInf,plen,"region","product");
         }
         else if(rlen>1&&plen>1){
             this.addHeadTr("商品","地区");
 
             flag=1;
 
-            proInf = dataOptions.sortData(proInf);
-            console.log(proInf);
+            proInf = dataOptions.sortData(proInf);                //排序，让相同的商品条目靠近
 
-            phontlen = dataOptions.getLength(proInf,"手机");
+            phontlen = dataOptions.getLength(proInf,"手机");      //依次获得每个商品的条目数量
             booklen = dataOptions.getLength(proInf,"笔记本");
             audiolen = dataOptions.getLength(proInf,"智能音箱");
 
-            console.log(phontlen,booklen,audiolen);
 
 
             this.addDiverse(0,booklen,booklen,proInf);
@@ -258,8 +255,6 @@ var tableOptions = {
             this.addTrd(proInf);
         }
     }
-
-
 };
 
 
