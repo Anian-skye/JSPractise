@@ -7,3 +7,11 @@ div.table-wrapper table tr td{
     width:50px;
     height:20px;
 }
+
+#graphDiv{
+    display: flex;
+}
+
+#graphDiv span{
+    display: block;
+}

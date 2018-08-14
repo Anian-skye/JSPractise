@@ -207,6 +207,7 @@ var tableOptions = {
         secondtd.innerHTML = second;
 
         var headTr = document.createElement("tr");
+        headTr.setAttribute("class","head");
         headTr.appendChild(firsttd);
         headTr.appendChild(secondtd);
         addmonth(headTr);
@@ -254,6 +255,15 @@ var tableOptions = {
             this.addHeadTr("商品","地区");
             this.addTrd(proInf);
         }
+    },
+
+    getData:function(tr){
+        tds = tr.childNodes;
+        var data = [];
+        for(var i=2,len = tds.length;i<len;i++){
+            data.push(tds[i].innerHTML);
+        }
+        return data;
     }
 };
 
@@ -287,6 +297,56 @@ var checkboxs = {
 };
 
 
+
+
+function randomColor(){
+    return '#'+Math.floor(Math.random()*0xffffff).toString(16);
+}
+
+
+var graphOptions = {
+
+
+    drawOneLine:function(data,c){
+        var color = randomColor();
+        pointLine.clear(c);
+        pointLine.set(data,color);
+        pointLine.draw(c);
+    },
+
+    drawMutiline:function(data,c){
+        pointLine.clear(c);
+        this.clearSpan();
+        for(let i=0,len=data.length;i<len;i++){
+            var color = randomColor();
+            this.addSpan(data[i],color);
+            var sale = data[i].sale;
+            pointLine.set(sale,color);
+            pointLine.draw(c);
+         }
+
+    },
+    clearSpan:function(){
+        var spans = graphDiv.getElementsByTagName("span");
+        console.log(spans);
+        for(var i=0,len = spans.length;i<len;i++){
+            console.log(spans[i]);
+            if(spans[0]!=undefined)
+                graphDiv.removeChild(spans[0]);
+        }
+    },
+    addSpan:function(data,color){
+        var span = document.createElement("span");
+        span.innerHTML = data.product +","+data.region;
+        span.style.color = color;
+        graphDiv.appendChild(span);
+    }
+
+
+};
+
+
+
 var region = document.getElementById("region-radio-wrapper");
 checkboxs.addBoxs(region,[{
     id:"east",
@@ -315,21 +375,53 @@ checkboxs.addBoxs(product,[{
 
 var regionDiv = document.getElementById("region-radio-wrapper");
 var productDiv = document.getElementById("product-radio-wrapper");
+var graphDiv = document.getElementById("graphSpan");
+var c=document.getElementById("myCanvas");
 
 region.addEventListener("click",function(event){
-     tableOptions.deleteAllTrd();                   //移除表格中已经存在的所有行
-     dataset = dataOptions.getIntersection();       //两组checkbox选中的值取交集(如果其中一组值为空，值等于不为空的集合)
-     tableOptions.addTrdDepends(dataset);                  //按照上一步得到的数据集添加行
+    tableOptions.deleteAllTrd();                   //移除表格中已经存在的所有行
+    dataset = dataOptions.getIntersection();       //两组checkbox选中的值取交集(如果其中一组值为空，值等于不为空的集合)
+    if(dataset.length>0)
+    {
+        graphOptions.drawMutiline(dataset,c);
+        tableOptions.addTrdDepends(dataset);                  //按照上一步得到的数据集添加行
+    }
+
 });
 
 
 product.addEventListener("click",function(event){
     tableOptions.deleteAllTrd();
     dataset = dataOptions.getIntersection();
-    tableOptions.addTrdDepends(dataset);
+    console.log(dataset.length);
+    if(dataset.length>0){
+        graphOptions.drawMutiline(dataset,c);
+        tableOptions.addTrdDepends(dataset);
+    }
+
 });
 
 
+var table = tableOptions.table;
+
+table.addEventListener("mouseover",function(event){
+     var par = event.target.parentNode;
+     if(par.getAttribute("class")==null){
+         var data = tableOptions.getData(par);
+
+         var svg = document.getElementById("rectSvg");
+         rect.clear(svg);
+         rect.set(data);
+         rect.draw(svg);
+
+
+         graphOptions.clearSpan();
+         graphOptions.drawOneLine(data,c);
+
+     }
+
+
+});
 
 
 
