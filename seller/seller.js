@@ -111,6 +111,42 @@ var dataOptions = {
                 count++;
         }
         return count;
+    },
+    getData:function(tr){
+        tds = tr.childNodes;
+        var data = [];
+        for(var i=2,len = tds.length;i<len;i++){
+            data.push(tds[i].innerHTML);
+        }
+        return data;
+    },
+
+    getRectData:function(dataset){
+        var rectData = [];
+        for(var i=0,len = dataset.length;i<len;i++){
+            var sale = dataset[i].sale;
+            for(var j=0;j<12;j++){
+                if(!rectData[j])
+                    rectData[j]=[];
+                rectData[j].push(sale[j]);
+            }
+        }
+
+        return rectData;
+    },
+
+    getMax:function(dataset){
+        var maxy = -1;
+        var maxx = 0;
+        for(var i=0,ilen = dataset.length;i<ilen;i++){
+            for(var j=0,jlen = dataset[i].length;j<jlen;j++){
+                maxx++;
+                if(dataset[i][j]>maxy)
+                    maxy = dataset[i][j];
+            }
+        }
+        var max = [maxx,maxy];
+        return max;
     }
 
 };
@@ -255,16 +291,8 @@ var tableOptions = {
             this.addHeadTr("商品","地区");
             this.addTrd(proInf);
         }
-    },
-
-    getData:function(tr){
-        tds = tr.childNodes;
-        var data = [];
-        for(var i=2,len = tds.length;i<len;i++){
-            data.push(tds[i].innerHTML);
-        }
-        return data;
     }
+
 };
 
 
@@ -326,6 +354,25 @@ var graphOptions = {
          }
 
     },
+
+    drawMutiRect:function(dataset,c){
+        var data = dataOptions.getRectData(dataset);
+
+        var max = dataOptions.getMax(data);
+        console.log(max);
+
+        var lastx = 0;
+        rect.clear(svg);
+        var rectWidth = 700/max[0];
+        rect.set(data[0]);
+        lastx = rect.draw(svg,lastx+2,color,max);
+        for(var i=1,len = data.length;i<len;i++){
+            var color = randomColor();
+            console.log(data[i]);
+            rect.set(data[i]);
+            lastx = rect.draw(svg,lastx+(rectWidth+2),color,max);
+        }
+    },
     clearSpan:function(){
         var spans = graphDiv.getElementsByTagName("span");
         console.log(spans);
@@ -377,12 +424,14 @@ var regionDiv = document.getElementById("region-radio-wrapper");
 var productDiv = document.getElementById("product-radio-wrapper");
 var graphDiv = document.getElementById("graphSpan");
 var c=document.getElementById("myCanvas");
+var svg = document.getElementById("rectSvg");
 
 region.addEventListener("click",function(event){
     tableOptions.deleteAllTrd();                   //移除表格中已经存在的所有行
     dataset = dataOptions.getIntersection();       //两组checkbox选中的值取交集(如果其中一组值为空，值等于不为空的集合)
     if(dataset.length>0)
     {
+        graphOptions.drawMutiRect(dataset,c);
         graphOptions.drawMutiline(dataset,c);
         tableOptions.addTrdDepends(dataset);                  //按照上一步得到的数据集添加行
     }
@@ -393,8 +442,9 @@ region.addEventListener("click",function(event){
 product.addEventListener("click",function(event){
     tableOptions.deleteAllTrd();
     dataset = dataOptions.getIntersection();
-    console.log(dataset.length);
+    console.log(dataset);
     if(dataset.length>0){
+        graphOptions.drawMutiRect(dataset,c);
         graphOptions.drawMutiline(dataset,c);
         tableOptions.addTrdDepends(dataset);
     }
@@ -407,12 +457,11 @@ var table = tableOptions.table;
 table.addEventListener("mouseover",function(event){
      var par = event.target.parentNode;
      if(par.getAttribute("class")==null){
-         var data = tableOptions.getData(par);
-
-         var svg = document.getElementById("rectSvg");
+         var data = dataOptions.getData(par);
+         maxSale=Math.max(...data);
          rect.clear(svg);
          rect.set(data);
-         rect.draw(svg);
+         rect.draw(svg,5,"blue",[17,maxSale]);
 
 
          graphOptions.clearSpan();

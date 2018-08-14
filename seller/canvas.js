@@ -39,7 +39,6 @@ var pointLine={
             var x = 30+i*20;
             var y = (array[i]/maxNum)*250;
             y = 300-y;
-            console.log(y);
             ctx.beginPath();
             ctx.arc(x,y,5,0,Math.PI*2,true);
             ctx.fillStyle = this._lineColor;

@@ -13,10 +13,11 @@ var rect = {
         return this._data;
     },
 
-    draw:function(svg){
+    draw:function(svg,start,color="blue",max){
 
         var array = this.get();
-        var maxNum = Math.max.apply(Math,array);
+
+        console.log(max);
 
 
         var svgNS = "http://www.w3.org/2000/svg";
@@ -24,7 +25,7 @@ var rect = {
         var yaxis = document.createElementNS(svgNS,"line");
 
         xaxis.setAttribute("x1",0);
-        xaxis.setAttribute("x2",300);
+        xaxis.setAttribute("x2",800);
         xaxis.setAttribute("y1",300);
         xaxis.setAttribute("y2",300);
         xaxis.setAttribute("stroke","rgb(99,99,99)");
@@ -39,20 +40,25 @@ var rect = {
         yaxis.setAttribute("stroke-width","5");
         svg.appendChild(yaxis);
 
+        var lastx;
 
+        var rectWidth = 500/max[0];
 
         for(var i=0,len = array.length;i<len;i++){
-            var h = (array[i]/maxNum)*250;
+            var h = (array[i]/max[1])*250;
             h = parseInt(h);
-            var x = 5+i*25;
+            var x = start+i*(rectWidth+2);
             var rect = document.createElementNS(svgNS,"rect");
             rect.setAttribute("x",x);
             rect.setAttribute("y",300-h);
-            rect.setAttribute("width","15");
+            rect.setAttribute("width",rectWidth);
             rect.setAttribute("height",h);
-            rect.setAttribute("fill","blue");
+            rect.setAttribute("fill",color);
             svg.appendChild(rect);
+            lastx = x;
         }
+        return lastx;
+
     },
     clear:function(svg){
 
