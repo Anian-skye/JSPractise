@@ -4,8 +4,9 @@ body{
 
 
 div.table-wrapper table tr td{
-    width:50px;
+    width:60px;
     height:20px;
+    padding:0 0;
 }
 
 #graphDiv{
@@ -15,3 +16,33 @@ div.table-wrapper table tr td{
 #graphDiv span{
     display: block;
 }
+
+#sellTable input{
+    display: inline-block;
+    height:10px;
+    width:25px;
+}
+
+#sellTable button{
+    display: inline-block;
+    height:8px;
+    width:5px;
+    border: none;
+}
+
+#sellTable button.change{
+    background: url("https://ws3.sinaimg.cn/large/006tNbRwly1fuaie65hk3j30e80e8glg.jpg"),no-repeat;
+    background-size:14px 7px;
+}
+
+/*#sellTable button.del{*/
+    /*background: url("https://ws4.sinaimg.cn/large/006tNbRwly1fuapzqjci2j30e80e8t8v.jpg"),no-repeat;*/
+    /*background-size:14px 7px;*/
+    /*display: none;*/
+/*}*/
+
+/*#sellTable button.save{*/
+    /*background: url("https://ws2.sinaimg.cn/large/006tNbRwly1fuapzcbf7oj30e80e8q2p.jpg"),no-repeat;*/
+    /*background-size:20px 20px;*/
+    /*display: none;*/
+/*}*/

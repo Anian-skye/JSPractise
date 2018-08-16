@@ -4,7 +4,7 @@
 
 
 
-var sourceData = [{
+let originData = [{
     product: "手机",
     region: "华东",
     sale: [120, 100, 140, 160, 180, 185, 190, 210, 230, 245, 255, 270]
@@ -44,256 +44,19 @@ var sourceData = [{
 
 
 
-var dataOptions = {
 
-    findRegionArry:function(r){
-        var regionArr = [];
-        for(var i=0,len=r.length;i<len;i++){
-            for(value in sourceData){
-                if(sourceData[value].region == r[i]||sourceData[value].product == r[i])
-                    regionArr.push(sourceData[value]);
-            }
-        }
-        return regionArr;
-    },
-    getIntersection:function(){
-        var dataset = [];
-
-        var regionChecked = checkboxs.getCheckBox(regionDiv);
-        var productChecked = checkboxs.getCheckBox(productDiv);
-        console.log(regionChecked,productChecked);
-        var regionData = dataOptions.findRegionArry(regionChecked);
-        var productData = dataOptions.findRegionArry(productChecked);
-
-        console.log(regionData);
-        console.log(productData);
-        rlen = regionData.length;
-        plen = productData.length;
-        if(rlen!=0&&plen!=0){
-            for(var i=0;i<rlen;i++){
-                for(j=0;j<plen;j++){
-                    if(regionData[i].region==productData[j].region){
-                        dataset.push(productData[j]);
-                        productData.splice(j,1);
-                        j=0;
-                        plen = productData.length;
-                    }
-                }
-            }
-        }
-        else if(rlen == 0){
-            dataset = productData;
-        }
-        else if(plen ==0){
-            dataset = regionData;
-        }
-
-        console.log("交集："+dataset);
-
-        return dataset;
-    },
-    sortData:function(data){
-        function compare(a,b){
-            if(a.product>b.product)
-                return 0;
-            else
-                return 1;
-        }
-
-        data.sort(compare);
-        return data;
-    },
-
-    getLength:function(data,name){
-        var count= 0;
-        for(var i=0,len = data.length;i<len;i++){
-            if(data[i].product == name)
-                count++;
-        }
-        return count;
-    },
-    getData:function(tr){
-        tds = tr.childNodes;
-        var data = [];
-        for(var i=2,len = tds.length;i<len;i++){
-            data.push(tds[i].innerHTML);
-        }
-        return data;
-    },
-
-    getRectData:function(dataset){
-        var rectData = [];
-        for(var i=0,len = dataset.length;i<len;i++){
-            var sale = dataset[i].sale;
-            for(var j=0;j<12;j++){
-                if(!rectData[j])
-                    rectData[j]=[];
-                rectData[j].push(sale[j]);
-            }
-        }
-
-        return rectData;
-    },
-
-    getMax:function(dataset){
-        var maxy = -1;
-        var maxx = 0;
-        for(var i=0,ilen = dataset.length;i<ilen;i++){
-            for(var j=0,jlen = dataset[i].length;j<jlen;j++){
-                maxx++;
-                if(dataset[i][j]>maxy)
-                    maxy = dataset[i][j];
-            }
-        }
-        var max = [maxx,maxy];
-        return max;
-    }
-
-};
-
-var tableOptions = {
-
-    table:document.getElementById("sellTable"),
-
-    addSaleTrd:function(proInf,tr){
-        for(var j=0,jlen=proInf.sale.length;j<jlen;j++){
-                var td = document.createElement("td");
-                td.innerHTML = proInf.sale[j];
-                tr.appendChild(td);
-            }
-            this.table.appendChild(tr);
-
-    },
-
-    addTrd:function(proInf){
-
-        for(var i=0,len=proInf.length;i<len;i++){
-            var tr = document.createElement("tr");
-            var proTd = document.createElement("td");
-            proTd.innerHTML = proInf[i].product;
-            tr.appendChild(proTd);
-            var regTd = document.createElement("td");
-            regTd.innerHTML = proInf[i].region;
-            tr.appendChild(regTd);
-            this.addSaleTrd(proInf[i],tr);
-        }
-    },
-
-    deleteAllTrd:function(){
-        var tr = this.table.getElementsByTagName("tr");
-        for(var i=0,len = tr.length;i<len;i++){
-            this.table.deleteRow(0);
-        }
-    },
+let myStorage = localStorage;
 
 
-    addDiverse:function(start,end,len,proInf){
-        flag=1;
-        for(var i=start;i<end;i++){
-            var tr = document.createElement("tr");
-            if(flag==1){
-                var proTd = document.createElement("td");
-                proTd.innerHTML = proInf[i].product;
-                proTd.rowSpan = len;
-                tr.appendChild(proTd);
-                flag=0;
-            }
+if(myStorage.length===0){
+    readData.initData();
+}
 
-            var regTd = document.createElement("td");
-            regTd.innerHTML = proInf[i].region;
-            tr.appendChild(regTd);
-            this.addSaleTrd(proInf[i],tr);
-        }
-
-    },
-    addOneMultiTr:function(proInf,len,first,second){
-        flag=1;
-
-        for(var i=0,l=proInf.length;i<l;i++){
-            var tr = document.createElement("tr");
-
-            if(flag == 1){
-                var firstTd = document.createElement("td");
-                firstTd.innerHTML = proInf[i][first];
-                firstTd.rowSpan = len;
-                tr.appendChild(firstTd);
-                flag=0;
-            }
-            var secondTd = document.createElement("td");
-            secondTd.innerHTML = proInf[i][second];
-            tr.appendChild(secondTd);
-            this.addSaleTrd(proInf[i],tr);
-        }
-
-    },
-
-    addHeadTr:function(first,second){
-
-        function addmonth(tr){
-            for(var i=1;i<=12;i++){
-                var td = document.createElement("td");
-                td.innerHTML = i+"月";
-                tr.appendChild(td);
-            }
-        }
-
-        var firsttd = document.createElement("td");
-        firsttd.innerHTML = first;
-        var secondtd = document.createElement("td");
-        secondtd.innerHTML = second;
-
-        var headTr = document.createElement("tr");
-        headTr.setAttribute("class","head");
-        headTr.appendChild(firsttd);
-        headTr.appendChild(secondtd);
-        addmonth(headTr);
-        this.table.appendChild(headTr);
+// readData.initData();
+readData.getLocalData();
+let sourceData = readData.localData;
 
 
-    },
-
-
-    addTrdDepends:function(proInf){
-        var regionChecked = checkboxs.getCheckBox(regionDiv);
-        var productChecked = checkboxs.getCheckBox(productDiv);
-        rlen = regionChecked.length;             //获取每个模块选择的个数
-        plen = productChecked.length;
-
-
-
-        if(rlen > 1 && plen==1){
-            this.addHeadTr("商品","地区");
-            this.addOneMultiTr(proInf,rlen,"product","region");
-        }
-        else if(rlen==1 && plen>1){
-            this.addHeadTr("地区","商品");
-            this.addOneMultiTr(proInf,plen,"region","product");
-        }
-        else if(rlen>1&&plen>1){
-            this.addHeadTr("商品","地区");
-
-            flag=1;
-
-            proInf = dataOptions.sortData(proInf);                //排序，让相同的商品条目靠近
-
-            phontlen = dataOptions.getLength(proInf,"手机");      //依次获得每个商品的条目数量
-            booklen = dataOptions.getLength(proInf,"笔记本");
-            audiolen = dataOptions.getLength(proInf,"智能音箱");
-
-
-
-            this.addDiverse(0,booklen,booklen,proInf);
-            this.addDiverse(booklen,booklen+phontlen,phontlen,proInf);
-            this.addDiverse(booklen+phontlen,booklen+phontlen+audiolen,audiolen,proInf);
-
-        }
-        else{
-            this.addHeadTr("商品","地区");
-            this.addTrd(proInf);
-        }
-    }
-
-};
 
 
 
@@ -305,6 +68,7 @@ var checkboxs = {
             box.setAttribute("id",arr[i].id);
             box.setAttribute("type","checkbox");
             box.setAttribute("value",arr[i].value);
+            box.checked = true;
 
             var label = document.createElement("label");
             label.setAttribute("for",arr[i].id);
@@ -334,7 +98,6 @@ function randomColor(){
 
 var graphOptions = {
 
-
     drawOneLine:function(data,c){
         var color = randomColor();
         pointLine.clear(c);
@@ -359,7 +122,6 @@ var graphOptions = {
         var data = dataOptions.getRectData(dataset);
 
         var max = dataOptions.getMax(data);
-        console.log(max);
 
         var lastx = 0;
         rect.clear(svg);
@@ -368,16 +130,13 @@ var graphOptions = {
         lastx = rect.draw(svg,lastx+2,color,max);
         for(var i=1,len = data.length;i<len;i++){
             var color = randomColor();
-            console.log(data[i]);
             rect.set(data[i]);
             lastx = rect.draw(svg,lastx+(rectWidth+2),color,max);
         }
     },
     clearSpan:function(){
         var spans = graphDiv.getElementsByTagName("span");
-        console.log(spans);
         for(var i=0,len = spans.length;i<len;i++){
-            console.log(spans[i]);
             if(spans[0]!=undefined)
                 graphDiv.removeChild(spans[0]);
         }
@@ -388,7 +147,6 @@ var graphOptions = {
         span.style.color = color;
         graphDiv.appendChild(span);
     }
-
 
 };
 
@@ -420,13 +178,18 @@ checkboxs.addBoxs(product,[{
 
 
 
+
+
 var regionDiv = document.getElementById("region-radio-wrapper");
 var productDiv = document.getElementById("product-radio-wrapper");
 var graphDiv = document.getElementById("graphSpan");
 var c=document.getElementById("myCanvas");
 var svg = document.getElementById("rectSvg");
 
-region.addEventListener("click",function(event){
+
+
+
+function drawAll(){
     tableOptions.deleteAllTrd();                   //移除表格中已经存在的所有行
     dataset = dataOptions.getIntersection();       //两组checkbox选中的值取交集(如果其中一组值为空，值等于不为空的集合)
     if(dataset.length>0)
@@ -435,40 +198,53 @@ region.addEventListener("click",function(event){
         graphOptions.drawMutiline(dataset,c);
         tableOptions.addTrdDepends(dataset);                  //按照上一步得到的数据集添加行
     }
+}
 
-});
-
-
-product.addEventListener("click",function(event){
-    tableOptions.deleteAllTrd();
-    dataset = dataOptions.getIntersection();
-    console.log(dataset);
-    if(dataset.length>0){
-        graphOptions.drawMutiRect(dataset,c);
-        graphOptions.drawMutiline(dataset,c);
-        tableOptions.addTrdDepends(dataset);
-    }
-
-});
+drawAll();
 
 
-var table = tableOptions.table;
+
+
+region.addEventListener("click",drawAll);
+
+
+product.addEventListener("click",drawAll);
+
+
+let table = tableOptions.table;
 
 table.addEventListener("mouseover",function(event){
-     var par = event.target.parentNode;
+     let par = event.target.parentNode;
      if(par.getAttribute("class")==null){
-         var data = dataOptions.getData(par);
+         let data = dataOptions.getData(par);
+         while(data.length == 0){
+             par = par.parentNode;
+             data = dataOptions.getData(par);
+         }
+
          maxSale=Math.max(...data);
          rect.clear(svg);
          rect.set(data);
          rect.draw(svg,5,"blue",[17,maxSale]);
-
-
          graphOptions.clearSpan();
          graphOptions.drawOneLine(data,c);
-
      }
+});
 
+table.addEventListener("mouseout",function(event){
+
+    var tar = event.target;
+    if(tar.getAttribute("id")=="sellTable")
+    {
+        tableOptions.deleteAllTrd();                   //移除表格中已经存在的所有行
+        dataset = dataOptions.getIntersection();       //两组checkbox选中的值取交集(如果其中一组值为空，值等于不为空的集合)
+        if(dataset.length>0)
+        {
+            graphOptions.drawMutiRect(dataset,c);
+            graphOptions.drawMutiline(dataset,c);
+            tableOptions.addTrdDepends(dataset);                  //按照上一步得到的数据集添加行
+        }
+    }
 
 });
 

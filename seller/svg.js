@@ -5,7 +5,6 @@
 
 var rect = {
 
-
     set:function(array){
         this._data = array;
      },
@@ -17,7 +16,6 @@ var rect = {
 
         var array = this.get();
 
-        console.log(max);
 
 
         var svgNS = "http://www.w3.org/2000/svg";
@@ -63,8 +61,6 @@ var rect = {
     clear:function(svg){
 
         var elements = svg.childNodes;
-        console.log(elements);
-
         for(var i=0,len = elements.length;i<len;i++){
             svg.removeChild(svg.childNodes[0]);
         }
