@@ -58,36 +58,9 @@ if(myStorage.length===0){
 // readData.initData();
 readData.getLocalData();
 let sourceData = readData.localData;
-hash = location.hash;
+// hash = location.hash;
 
-var checkboxs = {
-    addBoxs:function(d,arr){
-        for(var i=0,len = arr.length;i<len;i++){
-            var box = document.createElement("input");
-            box.setAttribute("id",arr[i].id);
-            box.setAttribute("type","checkbox");
-            box.setAttribute("value",arr[i].value);
-            hash = decodeURIComponent(hash);
-            console.log(hash,arr[i].value,hash.search(arr[i].value));
-            if(hash.search(arr[i].value)!=-1)
-                box.checked = true;
-            var label = document.createElement("label");
-            label.setAttribute("for",arr[i].id);
-            label.innerHTML = arr[i].value;
-            d.appendChild(label);
-            d.appendChild(box);
-        }
-    },
-    getCheckBox:function(d){
-        var checkBoxs = [];
-        var input = d.getElementsByTagName("input");
-        for(var i=0,len=input.length;i<len;i++){
-            if(input[i].checked == true)
-                checkBoxs.push(input[i].value);
-        }
-        return checkBoxs;
-    }
-};
+
 
 
 
@@ -156,7 +129,7 @@ var graphOptions = {
 let region = document.getElementById("region-radio-wrapper");
 checkboxs.addBoxs(region,[{
     id:"east",
-    value:"华东"
+    value:"华东",
 },{
     id:"north",
     value:"华北"
@@ -185,9 +158,24 @@ let graphDiv = document.getElementById("graphSpan");
 let c=document.getElementById("myCanvas");
 let svg = document.getElementById("rectSvg");
 
-let checkboxsName = getCheckBoxName();
-setHash(checkboxsName);
+// let checkboxsName = getCheckBoxName();
+// // setHash(checkboxsName);
+
+
+
 drawAll();
+state = getState();
+window.onpopstate = function(e) {
+
+    name = e.state["pro&reg"];
+
+
+    checkboxs.changeChecked(region);
+    checkboxs.changeChecked(product);
+    drawAll();
+};
+
+
 
 
 
@@ -207,15 +195,19 @@ function drawAll(){
 
 
 region.addEventListener("click",function(){
-    let checkboxsName = getCheckBoxName();
-    setHash(checkboxsName);
+    // let checkboxsName = getCheckBoxName();
+    // setHash(checkboxsName);
+    // drawAll();
+    createState();
     drawAll();
 });
 
 
 product.addEventListener("click",function(){
-    let checkboxsName = getCheckBoxName();
-    setHash(checkboxsName);
+    // let checkboxsName = getCheckBoxName();
+    // setHash(checkboxsName);
+    // drawAll();
+    createState();
     drawAll();
 });
 
@@ -256,17 +248,6 @@ table.addEventListener("mouseout",function(event){
     }
 
 });
-
-
-
-
-
-
-
-
-
-
-
 
 
 

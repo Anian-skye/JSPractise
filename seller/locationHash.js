@@ -7,21 +7,7 @@ function setHash(name){
     location.hash = name;
 }
 
-function getCheckBoxName(){
-    let regionChecked = checkboxs.getCheckBox(region);
-    let productChecked = checkboxs.getCheckBox(product);
-    let result='';
 
-    for(let i=0,len = regionChecked.length;i<len;i++){
-        console.log(regionChecked[i]);
-        result += regionChecked[i];
-    }
-
-    for(let i=0,len = productChecked.length;i<len;i++){
-        result += productChecked[i];
-    }
-    return result;
-}
 
 
 
