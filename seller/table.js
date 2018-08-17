@@ -76,11 +76,21 @@ let tableOptions = {
         td.appendChild(save);
         let name1,name2;
 
-        function getName(){
+        function getName(){          //需要判断该行第一列是否是合并的单元格
             let tr = td.parentNode;
             let tds = tr.getElementsByTagName("td");
             name1 = tds[0].innerHTML;
             name2 = tds[1].innerHTML;
+            let theName = name2;
+            name2 = name1;
+            console.log(name1,name2);
+            while(theName.length>10){
+                tr = tr.previousSibling;
+                let thisTds = tr.getElementsByTagName("td");
+                theName = thisTds[1].innerHTML;
+                name1 = thisTds[0].innerHTML;
+            }
+            console.log(name1,name2);
         }
 
         changeButton.addEventListener("click",function(){
@@ -98,8 +108,6 @@ let tableOptions = {
             tr = save.parentNode.parentNode;
             getName();
             console.log(name1,name2);
-
-
             inputValue = input.value;
             inputValue = parseInt(inputValue);
             if(isNaN(inputValue)){
@@ -142,14 +150,12 @@ let tableOptions = {
 
 
     addTrdDepends:function(proInf){
-        let regionChecked = checkboxs.getCheckBox(regionDiv);
-        let productChecked = checkboxs.getCheckBox(productDiv);
+        let regionChecked = checkboxs.getCheckBox(region);
+        let productChecked = checkboxs.getCheckBox(product);
         rlen = regionChecked.length;             //获取每个模块选择的个数
         plen = productChecked.length;
 
 
-
-        console.log("plen:"+plen+"rlen:"+rlen);
         if(plen>rlen&&plen!=1){
             this.addHeadTr("地区","商品");
             proInf = dataOptions.sortData(proInf,"region");
@@ -166,6 +172,11 @@ let tableOptions = {
             this.addItem(proInf,"region","product");
         }
         else if(plen==1&&rlen==0){
+            this.addHeadTr("商品","地区");
+            proInf = dataOptions.sortData(proInf,"product");                //排序，让相同的商品条目靠近
+            this.addItem(proInf,"product","region");
+        }
+        else if(plen==1&&rlen==1){
             this.addHeadTr("商品","地区");
             proInf = dataOptions.sortData(proInf,"product");                //排序，让相同的商品条目靠近
             this.addItem(proInf,"product","region");

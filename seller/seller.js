@@ -45,7 +45,10 @@ let originData = [{
 
 
 
+
+
 let myStorage = localStorage;
+
 
 
 if(myStorage.length===0){
@@ -55,21 +58,19 @@ if(myStorage.length===0){
 // readData.initData();
 readData.getLocalData();
 let sourceData = readData.localData;
-
-
-
-
+hash = location.hash;
 
 var checkboxs = {
     addBoxs:function(d,arr){
-
         for(var i=0,len = arr.length;i<len;i++){
             var box = document.createElement("input");
             box.setAttribute("id",arr[i].id);
             box.setAttribute("type","checkbox");
             box.setAttribute("value",arr[i].value);
-            box.checked = true;
-
+            hash = decodeURIComponent(hash);
+            console.log(hash,arr[i].value,hash.search(arr[i].value));
+            if(hash.search(arr[i].value)!=-1)
+                box.checked = true;
             var label = document.createElement("label");
             label.setAttribute("for",arr[i].id);
             label.innerHTML = arr[i].value;
@@ -152,7 +153,7 @@ var graphOptions = {
 
 
 
-var region = document.getElementById("region-radio-wrapper");
+let region = document.getElementById("region-radio-wrapper");
 checkboxs.addBoxs(region,[{
     id:"east",
     value:"华东"
@@ -164,7 +165,7 @@ checkboxs.addBoxs(region,[{
     value:"华南"
 }]);
 
-var product = document.getElementById("product-radio-wrapper");
+let product = document.getElementById("product-radio-wrapper");
 checkboxs.addBoxs(product,[{
     id:"phone",
     value:"手机"
@@ -180,11 +181,13 @@ checkboxs.addBoxs(product,[{
 
 
 
-var regionDiv = document.getElementById("region-radio-wrapper");
-var productDiv = document.getElementById("product-radio-wrapper");
-var graphDiv = document.getElementById("graphSpan");
-var c=document.getElementById("myCanvas");
-var svg = document.getElementById("rectSvg");
+let graphDiv = document.getElementById("graphSpan");
+let c=document.getElementById("myCanvas");
+let svg = document.getElementById("rectSvg");
+
+let checkboxsName = getCheckBoxName();
+setHash(checkboxsName);
+drawAll();
 
 
 
@@ -200,15 +203,21 @@ function drawAll(){
     }
 }
 
-drawAll();
 
 
 
+region.addEventListener("click",function(){
+    let checkboxsName = getCheckBoxName();
+    setHash(checkboxsName);
+    drawAll();
+});
 
-region.addEventListener("click",drawAll);
 
-
-product.addEventListener("click",drawAll);
+product.addEventListener("click",function(){
+    let checkboxsName = getCheckBoxName();
+    setHash(checkboxsName);
+    drawAll();
+});
 
 
 let table = tableOptions.table;

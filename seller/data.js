@@ -17,8 +17,8 @@ let dataOptions = {
     },
     getIntersection:function(){
         let dataset = [];
-        let regionChecked = checkboxs.getCheckBox(regionDiv);
-        let productChecked = checkboxs.getCheckBox(productDiv);
+        let regionChecked = checkboxs.getCheckBox(region);
+        let productChecked = checkboxs.getCheckBox(product);
         let regionData = dataOptions.findRegionArry(regionChecked);
         let productData = dataOptions.findRegionArry(productChecked);
 
@@ -70,7 +70,7 @@ let dataOptions = {
     getData:function(tr){
         tds = tr.childNodes;
         var data = [];
-        for(let i=2,len = tds.length;i<len;i++){
+        for(let i=0,len = tds.length;i<len;i++){
             let input = tds[i].getElementsByTagName("input")[0];
             if(input){
                 data.push(input.value);
