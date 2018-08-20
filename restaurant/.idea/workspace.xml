@@ -25,21 +25,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="resEs6.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="resEs6.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resEs6.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="348">
-              <caret line="136" column="1" lean-forward="true" selection-start-line="136" selection-start-column="1" selection-end-line="136" selection-end-column="1" />
+            <state relative-caret-position="294">
+              <caret line="101" column="29" lean-forward="true" selection-start-line="101" selection-start-column="29" selection-end-line="101" selection-end-column="29" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="19" column="47" lean-forward="true" selection-start-line="19" selection-start-column="47" selection-end-line="19" selection-end-column="47" />
+            <state relative-caret-position="135">
+              <caret line="9" column="24" lean-forward="true" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -61,8 +61,8 @@
         <option value="$PROJECT_DIR$/dinner.html" />
         <option value="$PROJECT_DIR$/restarurant.js" />
         <option value="$PROJECT_DIR$/restaurant.html" />
-        <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/resEs6.js" />
+        <option value="$PROJECT_DIR$/app.js" />
       </list>
     </option>
   </component>
@@ -217,12 +217,12 @@
       <updated>1534556858748</updated>
       <workItem from="1534556860302" duration="6954000" />
       <workItem from="1534767003522" duration="982000" />
-      <workItem from="1534773647572" duration="3350000" />
+      <workItem from="1534773647572" duration="4129000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11286000" />
+    <option name="totallyTimeSpent" value="12065000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="6" />
@@ -289,14 +289,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/restaurant.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="7" lean-forward="true" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/restarurant.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="415">
@@ -305,18 +297,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
+    <entry file="file://$PROJECT_DIR$/resEs6.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="47" lean-forward="true" selection-start-line="19" selection-start-column="47" selection-end-line="19" selection-end-column="47" />
+        <state relative-caret-position="294">
+          <caret line="101" column="29" lean-forward="true" selection-start-line="101" selection-start-column="29" selection-end-line="101" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resEs6.js">
+    <entry file="file://$PROJECT_DIR$/restaurant.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="136" column="1" lean-forward="true" selection-start-line="136" selection-start-column="1" selection-end-line="136" selection-end-column="1" />
+        <state relative-caret-position="120">
+          <caret line="8" column="7" lean-forward="true" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="24" lean-forward="true" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
           <folding />
         </state>
       </provider>

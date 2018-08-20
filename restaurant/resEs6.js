@@ -97,7 +97,7 @@ class Waiter extends Employee{
 
     static getInstance(name,salary) {
         if(!this.instance) {
-            this.instance = new Singleton(name,salary);
+            this.instance = new Waiter(name,salary);
         }
         return this.instance;
     }
@@ -117,7 +117,7 @@ class Cook extends Employee{
 
     static getInstance(name,salary) {
         if(!this.instance) {
-            this.instance = new Singleton(name,salary);
+            this.instance = new Cook(name,salary);
         }
         return this.instance;
     }

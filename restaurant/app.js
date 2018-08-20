@@ -4,8 +4,11 @@ let ifeRestaurant = new restaurant({
     seats: 20,
     staff: []
 });
-let waiter = new Waiter("Tom",1000);
-let cook = new Cook("Jack",1000);
+
+let waiter = Waiter.getInstance("Tom",1000);
+// let waiter2 = Waiter.getInstance("Jack",1000);
+// console.log(waiter2);
+let cook = Cook.getInstance("Jack",1000);
 ifeRestaurant.hire(waiter);
 ifeRestaurant.hire(cook);
 
