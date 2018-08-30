@@ -21,53 +21,62 @@ let foodList = [
         name: '清蒸螃蟹',
         cost: 50,
         price: 100,
-        time:2000
+        time:4000,
+        customer:[]
     },
     {
         name: '麻辣小龙虾',
         cost: 80,
         price: 200,
-        time:3000
+        time:4000,
+        customer:[]
     },
     {
         name: '水煮活鱼',
         cost: 60,
         price: 120,
-        time:2000
+        time:4000,
+        customer:[]
     },
     {
         name: '三鲜汤',
         cost: 8,
         price: 15,
-        time:1000,
+        time:3000,
+        customer:[]
     },
     {
         name: '蛋炒饭',
         cost: 6,
         price: 12,
-        time:1000
+        time:3000,
+        customer:[]
     },
     {
         name: '火锅',
         cost: 65,
         price: 150,
-        time:1500
+        time:3000,
+        customer:[]
     }
 ];
 
-let cusDiv = document.getElementById("customer");
+let cusDiv = document.getElementsByClassName("customer");
 let waiDiv = document.getElementById("waiter");
-let cooDiv = document.getElementById("cook");
 let cookStatus = document.getElementById("cookStatus");
-let eatStatus = document.getElementById("eatStatus").getElementsByTagName("table")[0];
-let menuDiv = document.getElementById("menu");
+// let eatStatus = document.getElementById("eatStatus").getElementsByTagName("table")[0];
+// let menuDiv = document.getElementById("menu");
 let waiterMess = document.getElementById("waiterMess");
+let cookMission = document.getElementById("cookMission");
 
 
 
 
 
-function addItem(name,status){
+
+
+
+function addItem(name,status,table){
     let tr = document.createElement("tr");
     let nameTd = document.createElement("td");
     nameTd.innerHTML = name;
@@ -75,13 +84,13 @@ function addItem(name,status){
     statusTd.innerHTML = status;
     tr.appendChild(nameTd);
     tr.appendChild(statusTd);
-    eatStatus.appendChild(tr);
+    table.appendChild(tr);
 }
 
-function removeAll(){
-    let trs = eatStatus.getElementsByTagName("tr");
+function removeAll(table){
+    let trs = table.getElementsByTagName("tr");
     for(let i=0,len = trs.length;i<len;i++){
-        eatStatus.removeChild(trs[0]);
+        table.removeChild(trs[0]);
     }
 }
 
@@ -90,17 +99,32 @@ class restaurant{
     constructor(resObj){
         this.cash = resObj.cash;
         this.seats = resObj.seat;
-        this.staff = resObj.staff;
+        this.cook = resObj.cook;
+        this.waiter = resObj.waiter;
     }
     hire(employee){
-        let id = this.staff.length+1;
-        employee.id = id;
-        this.staff.push(employee.id);
+        if(employee instanceof Cook){
+            let cid = this.cook.length+1;
+            employee.id = cid;
+            employee.status = 1;
+            this.cook.push(employee);
+        }
+        else if(employee instanceof Waiter){
+            let wid = this.waiter.length+1;
+            employee.id = wid;
+            employee.status = 1;
+            this.waiter.push(employee);
+        }
     }
     fire(employee){
-        let id = employee.id;
-        let index = this.staff.indexOf(id);
-        this.staff.splice(index,1);
+        if(employee instanceof Cook){
+            let index = this.cook.indexOf(employee);
+            this.cook.splice(index,1);
+        }
+        else if(employee instanceof Waiter){
+            let index = this.waiter.indexOf(employee);
+            this.waiter.splice(index,1);
+        }
     }
 }
 
@@ -119,38 +143,36 @@ class Waiter extends Employee{
 
     constructor(name,salary){
         super(name,salary);
-        this.instance = null;
     }
 
-    doOrderwork(dishes){
-        removeAll();
-        let menu = [];
+    doOrderwork(customer,menu){
+        let table = customer.statusDiv;
+        removeAll(table);
         let menuName = [];
-        for(let i=0,len = dishes.length;i<len;i++){
-            menu.push(foodList[dishes[i]]);
-            menuName.push(foodList[dishes[i]].name)
-        }
-        console.log("点餐完毕正在通知后厨,顾客点餐有："+dishes.join(","));
+        console.log("点餐完毕正在通知后厨");
         waiterMess.innerHTML = "点餐完毕正在通知后厨";
         waiDiv.style.marginLeft = "700px";
-        this.menu = menu;
-        menuDiv.innerText = "顾客点了:"+menuName.join(",");
         for(let dish of menu){
-            addItem(dish.name,"未上菜");
+            menuName.push(dish.name);
+            addItem(dish.name,"未上菜",table);
         }
-        this.countMoney(menu);
+        customer.menuDiv.innerText = "顾客"+customer.name+"点了:"+menuName.join(",");
+        this.status = 1;
         return menu;
     }
 
 
-    countMoney(dishes){
-        this.money = 0;
-        for(let dish of dishes){
-            this.money += dish.price;
+    countMoney(menu){
+        let count=0;
+        for(let dish of menu){
+            count+=dish.price;
         }
+        console.log("花费："+count);
+        return count;
     }
 
     doServerWork(dish){
+        this.status=1;
         if(dish){
             console.log("上菜:"+dish.name+"完成品");
             this.dish = dish;
@@ -159,47 +181,89 @@ class Waiter extends Employee{
 
     }
 
-    static getInstance(name,salary) {
-        if(!this.instance) {
-            this.instance = new Waiter(name,salary);
-        }
-        return this.instance;
-    }
+    checkIn(customer) {
+        console.log("结账"+customer.name, customer.menu.length);
+        let i = parseInt(customer.number);
+        console.log(i);
+        let thiswaiter = this;
 
+        setTimeout(() => {
+            console.log(customer.name + "结账");
+            waiDiv.style.marginLeft = "100px";
+            waiterMess.innerHTML = "顾客" + customer.name + "正在结账,共消费" + customer.money;
+            ifeRestaurant.cash += customer.money;
+            money.innerHTML = "目前饭店资金:" + ifeRestaurant.cash;
+            customer.done = true;
+            if (currentSeats < 2) {
+                currentSeats++;
+                customerList.delete(customer);
+                emptySeats.push(customer.number);
+            }
+            thiswaiter.status = 1;
+        }, 7 * TIME + i * 1000);
+        //延时 7 * TIME + i * 1000
+    }
 }
 
 class Cook extends Employee{
 
-    constructor(name,salary){
+    constructor(name,salary,workspace){
         super(name,salary);
-        this.instance = null;
+        this.workspace =workspace;
     }
     doCookwork(dish){
 
-
-        console.log("烹饪出菜品"+dish.name+"耗时"+dish.time);
-
-        for (let i = dish.time/1000; i > 0; i--){
+        console.log("正在烹饪"+dish.name+"耗时"+dish.time);
+        let thiscook = this;
+        for (let i = dish.time/1000; i >= 0; i--){
             setTimeout(function(){
-                cookStatus.innerHTML = "正在烹饪"+dish.name+"。还剩"+(dish.time-i*1000)/1000+"秒做完";
+                thiscook.workspace.innerHTML = "厨师"+thiscook.id+"正在烹饪"+dish.name+"。还剩"+(dish.time-i*1000)/1000+"秒做完";
+                if(i===dish.time/1000){
+                    thiscook.status = 1;
+                }
             }, i*1000);
         }
 
+        currentMenu.splice(0,1);
+        showDishes();
         return dish;
 
     }
 
-    static getInstance(name,salary) {
-        if(!this.instance) {
-            this.instance = new Cook(name,salary);
+    doIteCookwork(dish){
+        return function(callcack){
+            dish.done = true;
+            for (let i = dish.time/1000; i >= 0; i--){
+                setTimeout(function(){
+                    cookStatus.innerHTML = "正在烹饪"+dish.name+"。还剩"+(dish.time-i*1000)/1000+"秒做完";
+                    console.log("正在烹饪"+dish.name+"。还剩"+(dish.time-i*1000)/1000+"秒做完");
+                }, i*1000);
+            }
+            setTimeout(function(){
+                callcack(dish);
+                console.log(dish.name+"烹饪完毕");
+            },dish.time);
         }
-        return this.instance;
     }
+
+    // static getInstance(name,salary) {
+    //     if(!this.instance) {
+    //         this.instance = new Cook(name,salary);
+    //     }
+    //     return this.instance;
+    // }
 
 }
 
 
 class Customer{
+
+    constructor(name,number){
+        this.name = name;
+        this.number = number;
+        this.done = false;
+    }
+
     order(){
         let number = parseInt(Math.random()*4)+1;
         let dishes = new Set();
@@ -211,44 +275,112 @@ class Customer{
             dishes.add(dishPos);
         }
         dishes = [...dishes];
-        this.dishesNum = dishes.length;
-        this.currentNum = 0;
-        return dishes;
+        let menu = [];
+        for(let i=0,len = dishes.length;i<len;i++){
+            foodList[dishes[i]].done = false;
+            menu.push(foodList[dishes[i]]);
+        }
+        this.menu = menu;
+        let num = this.number;
+        this.menuDiv = cusDiv[num].getElementsByClassName("menu")[0];
+        this.statusDiv = cusDiv[num].getElementsByClassName("eatStatus")[0].getElementsByTagName("table")[0];
+        return menu;
     }
-    eat(dish){
-        setTimeout(()=>{
+
+
+    eatIte(dish){
+        let statusDiv = this.statusDiv;
+        let customer = this;
+        return function(callback){
             setTimeout(()=>{
-                waiDiv.style.marginLeft = "100px";
-                waiterMess.innerHTML = "上菜"+dish.name;
                 setTimeout(()=>{
-                    waiDiv.style.marginLeft = "700px";
-                    waiterMess.innerHTML = "等待下一个菜";
-                },0.5*TIME);
-                console.log("顾客用"+dish.name);
-                for (let i = 3; i > 0; i--){
-                    setTimeout(function(){
-                        //eatStatus.innerHTML = "顾客正在食用"+dish.name+"。还剩"+(3000-i*1000)/1000+"秒用餐完毕";
-                        let trs = eatStatus.getElementsByTagName("tr");
-                        for(let tr of trs){
-                            let tds = tr.getElementsByTagName("td");
-                            if(tds[0].innerHTML==dish.name){
-                                tds[1].innerHTML="正在食用";
-                                if(tds[2]){
-                                    tds[2].innerHTML = "还剩"+(3000-i*1000)/1000+"秒";
-                                }
-                                else{
-                                    let timeTd = document.createElement("td");
-                                    timeTd.innerHTML ="还剩"+(3000-i*1000)/1000+"秒";
-                                    tr.appendChild(timeTd);
+                    waiDiv.style.marginLeft = "100px";
+                    waiterMess.innerHTML = "上菜"+dish.name;
+                    setTimeout(()=>{
+                        waiDiv.style.marginLeft = "700px";
+                        waiterMess.innerHTML = "等待下一个菜";
+                    },0.5*TIME);
+                    console.log("顾客"+this.name+"用"+dish.name);
+                    for (let i = 3; i >= 0; i--){
+                        setTimeout(function(){
+                            let trs = statusDiv.getElementsByTagName("tr");
+                            for(let tr of trs){
+                                let tds = tr.getElementsByTagName("td");
+                                if(tds[0].innerHTML===dish.name){
+                                    tds[1].innerHTML="正在食用";
+                                    if(tds[2]){
+                                        tds[2].innerHTML = "还剩"+(3000-i*1000)/1000+"秒";
+                                    }
+                                    else{
+                                        let timeTd = document.createElement("td");
+                                        timeTd.innerHTML ="还剩"+(3000-i*1000)/1000+"秒";
+                                        tr.appendChild(timeTd);
+                                    }
                                 }
                             }
-                        }
+
+                        }, i*1000);
+                    }
+                    //从顾客的菜单出移除
+                    let index = customer.menu.indexOf(dish);
+                    customer.menu.splice(index,1);
+                    //console.log(this);
+                    //waiter.checkIn(customer);
+                },3*TIME);
+            },0.5*TIME);
+
+            setTimeout(function(){
+                callback(dish);
+                console.log("顾客用完了"+dish.name);
+            },3.5*TIME);
+
+        }
 
 
-                    }, i*1000);
-                }
-            },3*TIME);
-        },0.5*TIME);
+    }
+
+
+    eat(dish) {
+        if(this.menu.indexOf(dish) !== -1) {
+            //从顾客的菜单出移除
+            let index = this.menu.indexOf(dish);
+            this.menu.splice(index, 1);
+            let cusindex = dish.customer.indexOf(this);
+            dish.customer.splice(cusindex,1);
+            setTimeout(() => {
+                setTimeout(() => {
+                    waiDiv.style.marginLeft = "100px";
+                    waiterMess.innerHTML = "上菜" + dish.name;
+                    setTimeout(() => {
+                        waiDiv.style.marginLeft = "700px";
+                        waiterMess.innerHTML = "等待下一个菜";
+                    }, 0.5 * TIME);
+                    console.log("顾客" + this.name + "用" + dish.name);
+                    let statusDiv = this.statusDiv;
+                    for (let i = 3; i >= 0; i--) {
+                        setTimeout(function () {
+                            let trs = statusDiv.getElementsByTagName("tr");
+                            for (let tr of trs) {
+                                let tds = tr.getElementsByTagName("td");
+                                if (tds[0].innerHTML === dish.name) {
+                                    tds[1].innerHTML = "正在食用";
+                                    if (tds[2]) {
+                                        tds[2].innerHTML = "还剩" + (3000 - i * 1000) / 1000 + "秒";
+                                    }
+                                    else {
+                                        let timeTd = document.createElement("td");
+                                        timeTd.innerHTML = "还剩" + (3000 - i * 1000) / 1000 + "秒";
+                                        tr.appendChild(timeTd);
+                                    }
+                                }
+                            }
+
+                        }, i * 1000);
+                    }
+                }, 3 * TIME);
+            }, 0.5 * TIME);
+        }
+        return this;
     }
 }
 

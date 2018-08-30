@@ -1,6 +1,8 @@
 img{
     width:100px;
     height:100px;
+    display: block;
+    margin-left:200px;
 }
 
 #customer,#cook{
@@ -11,7 +13,7 @@ img{
 }
 
 #cuscoo{
-    margin:100px 200px;
+    margin:100px 100px;
 }
 #cook{
     margin-left: 200px;
@@ -27,14 +29,13 @@ img{
     border: 1px solid #cdd7e6;
 }
 
-#menu{
-    width:300px;
+#customers div.menu{
+    width:250px;
     height:50px;
     border:1px solid #cdd7e6;
 }
-
-#eatStatus{
-    width:300px;
+#customers div.eatStatus{
+    width:250px;
     height:200px;
     border: 1px solid #cdd7e6;
 }
@@ -44,3 +45,24 @@ img{
     height:100px;
     border: 1px solid #cdd7e6;
 }
+
+#customers div.customer{
+    float: left;
+}
+
+
+#cookMission{
+    width:199px;
+    height:200px;
+    border: 1px solid #cdd7e6;
+}
+
+#cookImg{
+    display: inline-block;
+}
+
+
+
+
+
+
