@@ -91,6 +91,7 @@ setInterval(function(){
 setInterval(function(){
 
     for(let cook of ifeRestaurant.cook){
+        console.log(currentMenu);
         if(cook.status===1&&currentMenu.length!==0){
             cook.status = 0;
             Event.trigger("cookDish",cook);
@@ -104,55 +105,47 @@ setInterval(function(){
 
 
 
-
-
 Event.listen("serveCus", function (customer) {
-    for (let waiter of ifeRestaurant.waiter) {
-        if (waiter.status===1){
-            waiter.status = 0;
-            let p = new Promise(resolve => {
-                resolve(customer);
-            });
-            currentCustomer.push(customer);
-            customerList.delete(customer.name);
-            currentSeats--;
-            emptySeats.splice(0, 1); //占用第一个空位
-            waiDiv.style.marginLeft = "100px";
-            waiterMess.innerHTML = "服务员"+waiter.id+"正在为" + customer.name + "点餐";
-            console.log("开始服务" + customer.name);
-            p.then(() => {
-                //客户点餐
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(customer.order());
-                    }, 2 * TIME)
-                })
-            }).then((menu) => {
-                return new Promise(resolve => {
-                    customer.money = waiter.countMoney(menu);
-                    for (let dish of menu) {
-                        //已经存在的不需要再做
-                        let flag = 0;
-                        for(let current of currentMenu){
-                            if(dish.name===current.name){
-                                current.customer.push(customer);
-                                flag = 1;
-                            }
-                        }
-                        if(flag === 0){
-                            dish.customer.push(customer);
-                            currentMenu.push(dish);
-                        }
+    let p = new Promise(resolve => {
+        resolve(customer);
+    });
+    currentCustomer.push(customer);
+    customerList.delete(customer.name);
+    currentSeats--;
+    emptySeats.splice(0, 1); //占用第一个空位
+    //waiDiv.style.marginLeft = "100px";
+    //waiterMess.innerHTML = "服务员"+waiter.id+"正在为" + customer.name + "点餐";
+    console.log(customer.name + "开始点餐");
+    p.then(() => {
+        //客户点餐
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(customer.order());
+            }, 2 * TIME)
+        })
+    }).then((menu) => {
+        return new Promise(resolve => {
+            customer.money = ifeRestaurant.countMoney(menu);
+            for (let dish of menu) {
+                //已经存在的不需要再做
+                let flag = 0;
+                for (let current of currentMenu) {
+                    if (dish.name === current.name) {
+                        current.customer.push(customer);
+                        flag = 1;
                     }
-                    setTimeout(() => {
-                        showDishes();
-                        resolve(waiter.doOrderwork(customer, menu));
-                    }, 0.5 * TIME)
-                });
-            });
-            break;
-        }
-    }
+                }
+                if (flag === 0) {
+                    dish.customer.push(customer);
+                    currentMenu.push(dish);
+                }
+            }
+            // setTimeout(() => {
+            //     showDishes();
+            //     resolve(waiter.doOrderwork(customer, menu));
+            // }, 0.5 * TIME)
+        });
+    });
 });
 
 
@@ -170,6 +163,7 @@ Event.listen("cookDish",function(cook){
     }).then((dish)=>{
         return new Promise(resolve=>{
             for(let waiter of ifeRestaurant.waiter){
+                console.log(waiter);
                 if(waiter.status===1){
                     waiter.status = 0;
                     setTimeout(()=>{
@@ -184,24 +178,55 @@ Event.listen("cookDish",function(cook){
             for(let customer of currentCustomer){
                 if(dish.customer.indexOf(customer)!==-1){
                     resolve(customer.eat(dish));
+                    Event.trigger("checkIn",customer); //用resolve只能触发一次，有顾客同时结账时不能同时执行，所以用事件触发
                 }
             }
         });
-    }).then(customer=>{
-        return new Promise(resolve=>{
-            if(customer.menu.length===0){
-                for(let waiter of ifeRestaurant.waiter){
-                    if(waiter.status === 1){
-                        waiter.status = 0;
-                        waiter.checkIn(customer);
-                        break;
-                    }
-                }
-                resolve();
-            }
-        })
-
     })
+    //     .then(customer=>{
+    //     return new Promise(resolve=>{
+    //         if(customer.menu.length===0){
+    //             let flag = 0;
+    //             for(let waiter of ifeRestaurant.waiter){
+    //                 console.log(customer.name+waiter);
+    //                 if(waiter.status === 1){
+    //                     waiter.status = 0;
+    //                     waiter.checkIn(customer);
+    //                     flag=1;
+    //                     break;
+    //                 }
+    //             }
+    //             resolve();
+    //         }
+    //     })
+    //
+    // })
+});
+
+Event.listen("checkIn",(customer)=>{
+    let flag = 0;
+    function checkIn(){
+        for(let waiter of ifeRestaurant.waiter){
+            console.log(customer.name+waiter);
+            if(waiter.status === 1){
+                waiter.status = 0;
+                waiter.checkIn(customer);
+                flag=1;
+                break;
+            }
+        }
+    }
+
+    if(customer.menu.length===0){
+        checkIn();
+        if(flag===0){
+            let interval = setInterval(()=>{
+                checkIn();
+                if(flag===1)
+                    clearInterval(interval);
+            },1000);
+        }
+    }
 });
 
 

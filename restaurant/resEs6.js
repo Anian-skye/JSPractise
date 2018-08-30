@@ -126,6 +126,14 @@ class restaurant{
             this.waiter.splice(index,1);
         }
     }
+    countMoney(menu){
+        let count=0;
+        for(let dish of menu){
+            count+=dish.price;
+        }
+        console.log("花费："+count);
+        return count;
+    }
 }
 
 class Employee{
@@ -162,15 +170,6 @@ class Waiter extends Employee{
     }
 
 
-    countMoney(menu){
-        let count=0;
-        for(let dish of menu){
-            count+=dish.price;
-        }
-        console.log("花费："+count);
-        return count;
-    }
-
     doServerWork(dish){
         this.status=1;
         if(dish){
@@ -184,7 +183,6 @@ class Waiter extends Employee{
     checkIn(customer) {
         console.log("结账"+customer.name, customer.menu.length);
         let i = parseInt(customer.number);
-        console.log(i);
         let thiswaiter = this;
 
         setTimeout(() => {
@@ -265,12 +263,12 @@ class Customer{
     }
 
     order(){
-        let number = parseInt(Math.random()*4)+1;
+        let number = Math.floor(Math.random()*5)+1;
         let dishes = new Set();
         for(let i=0;i<number;i++){
-            let dishPos = parseInt(Math.random()*4)+1;
+            let dishPos = Math.floor(Math.random()*6);
             while(dishes.has(dishPos)){
-                dishPos = parseInt(Math.random()*4)+1;
+                dishPos = Math.floor(Math.random()*6);
             }
             dishes.add(dishPos);
         }
@@ -284,6 +282,26 @@ class Customer{
         let num = this.number;
         this.menuDiv = cusDiv[num].getElementsByClassName("menu")[0];
         this.statusDiv = cusDiv[num].getElementsByClassName("eatStatus")[0].getElementsByTagName("table")[0];
+        let menuName = [];
+        removeAll(this.statusDiv);
+        let thiscus = this;
+        this.menuDiv.innerHTML = "";
+
+        for(let i=3;i>=0;i--){
+
+            setTimeout(()=>{
+                this.statusDiv.innerHTML = "顾客"+thiscus.name+"正在点餐，还剩"+(2-i)+"秒";
+                if(i===3){
+                    this.statusDiv.innerHTML = "";
+                    for(let dish of menu){
+                        menuName.push(dish.name);
+                        addItem(dish.name,"未上菜",this.statusDiv);
+                    }
+                    this.menuDiv.innerText = "顾客"+this.name+"点了:"+menuName.join(",");
+                }
+            },i*TIME)
+        }
+
         return menu;
     }
 
